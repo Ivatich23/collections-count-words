@@ -6,38 +6,53 @@ import java.util.*;
 
 public class Words {
     public String countWords(List<String> lines) {
-        Map<String, Integer> values = new HashMap<>();
+        Map<String, Integer> wordMap = new HashMap<>();
         for (String line : lines) {
-            String[] s = line.split("[\\s.]");
-            for (int i = 0; i < s.length; i++) {
-                if (values.get(s[i]) == null) {
-                    values.put(s[i], 1);
-                } else {
-                    values.put(s[i], values.get(s[i]) + 1);
+            String[] words = line.toLowerCase().split("(?U)[\\pP\\s]");
+            for (int i = 0; i < words.length; i++) {
+                if (words[i].length() >= 4) {
+                    if (wordMap.get(words[i]) == null) {
+                        wordMap.put(words[i], 1);
+                    } else {
+                        wordMap.put(words[i], wordMap.get(words[i]) + 1);
+                    }
                 }
             }
         }
-        List<Map.Entry<String, Integer>> list = new ArrayList<>(values.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+        List<Map.Entry<String, Integer>> sortedWords = new ArrayList<>(wordMap.entrySet());
+        Collections.sort(sortedWords, new Comparator<Map.Entry<String, Integer>>() {
             @Override
             public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
                 if (o2.getValue() == o1.getValue()) {
-                    String s1 = o1.getKey();
-                    String s2 = o2.getKey();
-                    return s2.compareTo(s1);
-                }else {
-                    return o2.getValue() - o1.getValue();
+                    String s1 = o1.getKey().toLowerCase();
+                    String s2 = o2.getKey().toLowerCase();
+                    int i = 0;
+                    while (i < s1.length() && i < s2.length()) {
+                        if (s1.charAt(i) > s2.charAt(i)) {
+                            return 1;
+                        } else if (s1.charAt(i) < s2.charAt(i)) {
+                            return -1;
+                        } else {
+                            i++;
+                        }
+
+                    }
+
                 }
+                return o2.getValue() - o1.getValue();
+
             }
         });
         StringBuilder result = new StringBuilder();
-        for (Map.Entry<String, Integer> entry : list) {
-            if (entry.getValue() > 10 && entry.getKey().length() >= 4) {
-                result.append(entry.getKey().toLowerCase() + " - " + entry.getValue() + "\n");
+        for (Map.Entry<String, Integer> entry : sortedWords) {
+            if (entry.getValue() > 10 && result.length() == 0) {
+                result.append(entry.getKey().toLowerCase() + " - " + entry.getValue());
+            } else if (entry.getValue() >= 10) {
+                result.append("\n" + entry.getKey().toLowerCase() + " - " + entry.getValue());
             }
         }
-        String finalResult = result.toString();
-        return finalResult;
+
+        return result.toString();
 
     }
 }
