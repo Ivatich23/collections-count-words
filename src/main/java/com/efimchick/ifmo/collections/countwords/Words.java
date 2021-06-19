@@ -23,7 +23,7 @@ public class Words {
         Collections.sort(sortedWords, new Comparator<Map.Entry<String, Integer>>() {
             @Override
             public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                if (o2.getValue() == o1.getValue()) {
+                if (o2.getValue().equals( o1.getValue())) {
                     String s1 = o1.getKey();
                     String s2 = o2.getKey();
                     int i = 0;
